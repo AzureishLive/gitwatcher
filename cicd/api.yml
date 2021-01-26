@@ -1,10 +1,6 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
 - main
+- feature/*
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -29,9 +25,11 @@ steps:
     projects: '$(Build.SourcesDirectory)/backend/backend.csproj'
     arguments: '-o $(Build.ArtifactStagingDirectory)'
   displayName: 'dotnet publish'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
