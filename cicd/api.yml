@@ -25,9 +25,9 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
-    publishWebProjects: true
+    publishWebProjects: false
+    projects: '$(Build.SourcesDirectory)/backend/backend.csproj'
     arguments: '-o $(Build.ArtifactStagingDirectory)'
-    workingDirectory: '$(Build.SourcesDirectory)/backend/'
   displayName: 'dotnet publish'
 
 - task: PublishBuildArtifacts@1
