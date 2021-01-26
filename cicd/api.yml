@@ -5,31 +5,36 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
-    version: '3.1.x'
-  displayName: 'Set SDK to 3.1.x'
+stages:
+  - stage: build
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'build'
-    projects: '$(Build.SourcesDirectory)/backend/backend.csproj'
-  displayName: 'Build backend service'
+    jobs:
+      - job: build
+        steps:
+        - task: UseDotNet@2
+          inputs:
+            packageType: 'sdk'
+            version: '3.1.x'
+          displayName: 'Set SDK to 3.1.x'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'publish'
-    publishWebProjects: false
-    projects: '$(Build.SourcesDirectory)/backend/backend.csproj'
-    arguments: '-o $(Build.ArtifactStagingDirectory)'
-  displayName: 'dotnet publish'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+        - task: DotNetCoreCLI@2
+          inputs:
+            command: 'build'
+            projects: '$(Build.SourcesDirectory)/backend/backend.csproj'
+          displayName: 'Build backend service'
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+        - task: DotNetCoreCLI@2
+          inputs:
+            command: 'publish'
+            publishWebProjects: false
+            projects: '$(Build.SourcesDirectory)/backend/backend.csproj'
+            arguments: '-o $(Build.ArtifactStagingDirectory)'
+          displayName: 'dotnet publish'
+          condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
+        - task: PublishBuildArtifacts@1
+          inputs:
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+            ArtifactName: 'drop'
+            publishLocation: 'Container'
+          condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
