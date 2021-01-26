@@ -14,8 +14,10 @@ steps:
   inputs:
     packageType: 'sdk'
     version: '3.1.x'
+  displayName: 'Set SDK to 3.1.x'
 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
     projects: '$(Build.SourcesDirectory)/backend/backend.csproj'
+  displayName: 'Build backend service'
