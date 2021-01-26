@@ -21,3 +21,17 @@ steps:
     command: 'build'
     projects: '$(Build.SourcesDirectory)/backend/backend.csproj'
   displayName: 'Build backend service'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    arguments: '-o $(Build.ArtifactStagingDirectory)'
+    workingDirectory: '$(Build.SourcesDirectory)/backend/'
+  displayName: 'dotnet publish'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
