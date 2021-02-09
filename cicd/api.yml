@@ -72,4 +72,5 @@ stages:
             templateLocation: 'Linked artifact'
             csmFile: '$(Build.SourcesDirectory)/infrastructure/state-backend/state-backend.azuredeploy.json'
             deploymentMode: 'Incremental'
+            resourceGroupName: 'azl-tfstate-shared-uks-rg'
      
