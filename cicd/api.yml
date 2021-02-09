@@ -39,6 +39,13 @@ stages:
             publishLocation: 'Container'
           condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: '$(Build.SourcesDirectory)/infrastructure'
+            artifact: 'infrastructure'
+            publishLocation: 'pipeline'
+          condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
   - stage: prereqs
 
     jobs:
