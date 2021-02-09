@@ -61,16 +61,17 @@ stages:
           inputs:
             buildType: 'current'
             artifactName: 'infrastructure'
-            targetPath: '$(Build.SourcesDirectory)'
+            targetPath: '$(System.DefaultWorkingDirectory)'
 
         - task: AzureResourceManagerTemplateDeployment@3
           inputs:
-            deploymentScope: 'Subscription'
+            deploymentScope: 'Resource Group'
             azureResourceManagerConnection: 'GitWatcher'
             subscriptionId: '$(SUBSCRIPTIONID)'
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: 'azl-tfstate-shared-uks-rg'
             location: 'UK South'
             templateLocation: 'Linked artifact'
-            csmFile: '$(Build.SourcesDirectory)/infrastructure/state-backend/state-backend.azuredeploy.json'
+            csmFile: '$(System.DefaultWorkingDirectory)/infrastructure/state-backend/state-backend.azuredeploy.json'
             deploymentMode: 'Incremental'
-            resourceGroupName: 'azl-tfstate-shared-uks-rg'
      
