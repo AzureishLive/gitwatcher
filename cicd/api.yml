@@ -38,3 +38,20 @@ stages:
             ArtifactName: 'drop'
             publishLocation: 'Container'
           condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
+  - stage: prereqs
+
+    jobs:
+      - job: prereqs
+        steps:
+        
+        - task: AzureResourceManagerTemplateDeployment@3
+          inputs:
+            deploymentScope: 'Subscription'
+            azureResourceManagerConnection: 'GitWatcher'
+            subscriptionId: '$(SUBSCRIPTIONID)'
+            location: 'UK South'
+            templateLocation: 'Linked artifact'
+            csmFile: '$(Build.SourcesDirectory)/infrastructure/state-backend/state-backed.azuredeploy.json'
+            deploymentMode: 'Incremental'
+     
