@@ -43,6 +43,8 @@ stages:
 
     jobs:
       - job: prereqs
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
         steps:
         
         - task: AzureResourceManagerTemplateDeployment@3
@@ -52,6 +54,6 @@ stages:
             subscriptionId: '$(SUBSCRIPTIONID)'
             location: 'UK South'
             templateLocation: 'Linked artifact'
-            csmFile: '$(Build.SourcesDirectory)/infrastructure/state-backend/state-backed.azuredeploy.json'
+            csmFile: '$(Build.SourcesDirectory)/infrastructure/state-backend/state-backend.azuredeploy.json'
             deploymentMode: 'Incremental'
      
