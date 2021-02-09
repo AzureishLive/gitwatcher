@@ -38,3 +38,35 @@ stages:
             ArtifactName: 'drop'
             publishLocation: 'Container'
           condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: '$(Build.SourcesDirectory)/infrastructure'
+            artifact: 'infrastructure'
+            publishLocation: 'pipeline'
+          condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
+  - stage: prereqs
+
+    jobs:
+      - job: prereqs
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
+        steps:
+        
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            buildType: 'current'
+            artifactName: 'infrastructure'
+            targetPath: '$(Pipeline.Workspace)'
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          inputs:
+            deploymentScope: 'Subscription'
+            azureResourceManagerConnection: 'GitWatcher'
+            subscriptionId: '$(SUBSCRIPTIONID)'
+            location: 'UK South'
+            templateLocation: 'Linked artifact'
+            csmFile: '$(Pipeline.Workspace)/infrastructure/state-backend/state-backend.azuredeploy.json'
+            deploymentMode: 'Incremental'
+     
