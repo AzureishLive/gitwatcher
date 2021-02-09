@@ -54,6 +54,12 @@ stages:
 
         steps:
         
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            buildType: 'current'
+            artifactName: 'infrastructure'
+            targetPath: '$(Pipeline.Workspace)'
+
         - task: AzureResourceManagerTemplateDeployment@3
           inputs:
             deploymentScope: 'Subscription'
@@ -61,6 +67,6 @@ stages:
             subscriptionId: '$(SUBSCRIPTIONID)'
             location: 'UK South'
             templateLocation: 'Linked artifact'
-            csmFile: '$(Build.SourcesDirectory)/infrastructure/state-backend/state-backend.azuredeploy.json'
+            csmFile: '$(Pipeline.Workspace)/infrastructure/state-backend/state-backend.azuredeploy.json'
             deploymentMode: 'Incremental'
      
