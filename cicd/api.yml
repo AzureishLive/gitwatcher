@@ -5,6 +5,9 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  system.debug: true
+
 stages:
   - stage: build
 
@@ -58,7 +61,7 @@ stages:
           inputs:
             buildType: 'current'
             artifactName: 'infrastructure'
-            targetPath: '$(Pipeline.Workspace)'
+            targetPath: '$(Build.SourcesDirectory)'
 
         - task: AzureResourceManagerTemplateDeployment@3
           inputs:
@@ -67,6 +70,6 @@ stages:
             subscriptionId: '$(SUBSCRIPTIONID)'
             location: 'UK South'
             templateLocation: 'Linked artifact'
-            csmFile: '$(Pipeline.Workspace)/infrastructure/state-backend/state-backend.azuredeploy.json'
+            csmFile: '$(Build.SourcesDirectory)/infrastructure/state-backend/state-backend.azuredeploy.json'
             deploymentMode: 'Incremental'
      
