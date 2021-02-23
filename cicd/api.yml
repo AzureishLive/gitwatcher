@@ -84,7 +84,7 @@ stages:
       location_short_code: uks
       shortcode: azl
       product: gitwatcher
-      envname: dev
+      environment_name: dev
       backendAzureRmContainerName: tfstate
       backendAzureRmKey: dev 
       backendStorageAccount: tfstateiyk2ucxjdl4vo
