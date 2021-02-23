@@ -79,4 +79,11 @@ stages:
             templateLocation: 'Linked artifact'
             csmFile: '$(System.DefaultWorkingDirectory)/infrastructure/state-backend/state-backend.azuredeploy.json'
             deploymentMode: 'Incremental'
-     
+
+  # - stage: dev
+
+  #   jobs:
+  #     - job: dev
+  #       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
+  #       steps:     
