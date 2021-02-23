@@ -80,10 +80,27 @@ stages:
             csmFile: '$(System.DefaultWorkingDirectory)/infrastructure/state-backend/state-backend.azuredeploy.json'
             deploymentMode: 'Incremental'
 
-  # - stage: dev
+  - stage: dev
 
-  #   jobs:
-  #     - job: dev
-  #       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - job: dev
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
-  #       steps:     
+        steps:     
+
+        - task: TerraformInstaller@0
+          inputs:
+            terraformVersion: '0.14.7'
+        
+        
+
+        - task: TerraformTaskV1@0
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/backend'
+            backendServiceArm: 'GitWatcher'
+            backendAzureRmResourceGroupName: 'azl-tfstate-shared-uks-rg'
+            backendAzureRmStorageAccountName: 'tfstateiyk2ucxjdl4vo'
+            backendAzureRmContainerName: 'tfstate'
+            backendAzureRmKey: 'dev'
