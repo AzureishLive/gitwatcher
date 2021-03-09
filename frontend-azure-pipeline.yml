@@ -44,3 +44,112 @@ stages:
             publishLocation: 'Container'
           condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: '$(Build.SourcesDirectory)/infrastructure'
+            artifact: 'infrastructure'
+            publishLocation: 'pipeline'
+          condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
+  - stage: prereqs
+
+    jobs:
+      - job: prereqs
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
+        steps:
+        
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            buildType: 'current'
+            artifactName: 'infrastructure'
+            targetPath: '$(System.DefaultWorkingDirectory)'
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: 'GitWatcher'
+            subscriptionId: '$(SUBSCRIPTIONID)'
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: 'azl-tfstate-shared-uks-rg'
+            location: 'UK South'
+            templateLocation: 'Linked artifact'
+            csmFile: '$(System.DefaultWorkingDirectory)/infrastructure/state-backend/state-backend.azuredeploy.json'
+            deploymentMode: 'Incremental'
+
+  - stage: dev
+
+    variables:
+      location: UKSouth
+      location_short_code: uks
+      shortcode: azl
+      product: gitwatcher
+      environment_name: dev
+      backendAzureRmContainerName: tfstate
+      backendAzureRmKey: devclient
+      backendStorageAccount: tfstateiyk2ucxjdl4vo
+      resource_group_tfstate: azl-tfstate-shared-uks-rg
+          
+    jobs:
+      - job: dev
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
+        steps:     
+
+        - task: TerraformInstaller@0
+          inputs:
+            terraformVersion: '0.14.7'
+        
+        - task: replacetokens@3
+          inputs:
+            rootDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/client'
+            targetFiles: '**/*.tfvars'
+            encoding: 'auto'
+            writeBOM: true
+            actionOnMissing: 'warn'
+            keepToken: false
+            tokenPrefix: '__'
+            tokenSuffix: '__'
+            useLegacyPattern: false
+            enableTransforms: false
+            enableTelemetry: true
+
+        - task: TerraformTaskV1@0
+          displayName: 'Terraform Init'
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/client'
+            backendServiceArm: 'GitWatcher'
+            backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
+            backendAzureRmStorageAccountName: '$(backendStorageAccount)'
+            backendAzureRmContainerName: '$(backendAzureRmContainerName)'
+            backendAzureRmKey: '$(backendAzureRmKey)'
+
+        - task: TerraformTaskV1@0
+          displayName: 'Terraform plan'
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/client'
+            commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/infrastructure/client/az-storage-account-client-variables.tfvars" --out=planfile'
+            environmentServiceNameAzureRM: 'GitWatcher'
+            backendServiceArm: 'GitWatcher'
+            backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
+            backendAzureRmStorageAccountName: '$(backendStorageAccount)'
+            backendAzureRmContainerName: $(backendAzureRmContainerName)
+            backendAzureRmKey: '$(backendAzureRmKey)'
+
+        - task: TerraformTaskV1@0
+          displayName: 'Terraform apply'
+          inputs:
+            provider: 'azurerm'
+            command: 'apply'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/client'
+            commandOptions: '-auto-approve planfile'
+            environmentServiceNameAzureRM: 'GitWatcher'
+            backendServiceArm: 'GitWatcher'
+            backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
+            backendAzureRmStorageAccountName: '$(storageAccountName)'
+            backendAzureRmContainerName: $(backendAzureRmContainerName)
+            backendAzureRmKey: '$(backendAzureRmKey)'            
