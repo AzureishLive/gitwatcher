@@ -115,6 +115,7 @@ stages:
             enableTelemetry: true
 
         - task: TerraformTaskV1@0
+          displayName: 'Terraform Init'
           inputs:
             provider: 'azurerm'
             command: 'init'
@@ -126,6 +127,7 @@ stages:
             backendAzureRmKey: '$(backendAzureRmKey)'
 
         - task: TerraformTaskV1@0
+          displayName: 'Terraform plan'
           inputs:
             provider: 'azurerm'
             command: 'plan'
@@ -151,3 +153,4 @@ stages:
             backendAzureRmStorageAccountName: '$(storageAccountName)'
             backendAzureRmContainerName: $(backendAzureRmContainerName)
             backendAzureRmKey: '$(backendAzureRmKey)'
+        
