@@ -154,3 +154,17 @@ stages:
             backendAzureRmContainerName: $(backendAzureRmContainerName)
             backendAzureRmKey: '$(backendAzureRmKey)'
         
+        - task: DownloadBuildArtifacts@0
+          inputs:
+            buildType: 'current'
+            downloadType: 'single'
+            artifactName: 'drop'
+            downloadPath: '$(System.DefaultWorkingDirectory)'
+        
+        - task: AzureRmWebAppDeployment@4
+          inputs:
+            ConnectionType: 'AzureRM'
+            azureSubscription: 'GitWatcher'
+            appType: 'functionApp'
+            WebAppName: '$(shortcode)-$(product)-$(environment_name)-$(location)-func'
+            packageForLinux: '$(System.DefaultWorkingDirectory)/**/backend.zip'
