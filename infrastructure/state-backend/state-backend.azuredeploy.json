@@ -50,7 +50,7 @@
       }
     ],
     "outputs": {
-      "storageAccountName": {
+      "tfStorageAccountName": {
         "type": "string",
         "value": "[variables('storageAccountName')]"
       }
