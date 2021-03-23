@@ -6,6 +6,7 @@ trigger:
  paths:
     include:
     - client
+    - cicd
 
 pool:
   vmImage: ubuntu-latest
@@ -71,7 +72,7 @@ stages:
             azureResourceManagerConnection: 'GitWatcher'
             subscriptionId: '$(SUBSCRIPTIONID)'
             action: 'Create Or Update Resource Group'
-            resourceGroupName: 'azl-tfstate-shared-uks-rg'
+            resourceGroupName: 'azl-tfstate-shared-ukw-rg'
             location: 'UK South'
             templateLocation: 'Linked artifact'
             csmFile: '$(System.DefaultWorkingDirectory)/infrastructure/state-backend/state-backend.azuredeploy.json'
@@ -80,14 +81,14 @@ stages:
   - stage: dev
 
     variables:
-      location: UKSouth
-      location_short_code: uks
+      location: UKWest
+      location_short_code: ukw
       shortcode: azl
       product: gitwatcher
       environment_name: dev
       backendAzureRmContainerName: tfstate
       backendAzureRmKey: devclient
-      backendStorageAccount: tfstateiyk2ucxjdl4vo
+      backendStorageAccount: tfstatedlm4lgkvg3eey
       resource_group_tfstate: azl-tfstate-shared-uks-rg
           
     jobs:
