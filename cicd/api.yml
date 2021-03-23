@@ -166,5 +166,5 @@ stages:
             ConnectionType: 'AzureRM'
             azureSubscription: 'GitWatcher'
             appType: 'functionApp'
-            WebAppName: '$(shortcode)-$(product)-$(environment_name)-$(location)-func'
+            WebAppName: '$(shortcode)-$(product)-$(environment_name)-$(location_short_code)-func'
             packageForLinux: '$(System.DefaultWorkingDirectory)/**/backend.zip'
