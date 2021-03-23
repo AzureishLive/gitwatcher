@@ -98,7 +98,7 @@ stages:
       environment_name: dev
       backendAzureRmContainerName: tfstate
       backendAzureRmKey: dev 
-      backendStorageAccount: $(tfStorageAccountName)
+      backendStorageAccount: tfstatedlm4lgkvg3eey
       resource_group_tfstate: azl-tfstate-shared-ukw-rg
           
     jobs:
