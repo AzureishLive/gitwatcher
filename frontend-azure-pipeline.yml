@@ -84,7 +84,7 @@ stages:
       location: UKWest
       location_short_code: ukw
       shortcode: azl
-      product: gitwatcherfe
+      product: gwfe
       environment_name: dev
       backendAzureRmContainerName: tfstate
       backendAzureRmKey: devclient
