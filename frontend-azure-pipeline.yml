@@ -89,7 +89,7 @@ stages:
       backendAzureRmContainerName: tfstate
       backendAzureRmKey: devclient
       backendStorageAccount: tfstatedlm4lgkvg3eey
-      resource_group_tfstate: azl-tfstate-shared-uks-rg
+      resource_group_tfstate: azl-tfstate-shared-ukw-rg
           
     jobs:
       - job: dev
